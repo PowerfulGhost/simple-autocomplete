@@ -1,0 +1,2 @@
+Activating extension 'undefined_publisher.simple-autocomplete' failed: require() of ES Module c:\Users\powerfulghost\projects\simple-autocomplete\out\extension.js from c:\Users\powerfulghost\AppData\Local\Programs\Microsoft VS Code\resources\app\out\vs\workbench\api\node\extensionHostProcess.js not supported.
+Instead change the require of extension.js in c:\Users\powerfulghost\AppData\Local\Programs\Microsoft VS Code\resources\app\out\vs\workbench\api\node\extensionHostProcess.js to a dynamic import() which is available in all CommonJS modules..
