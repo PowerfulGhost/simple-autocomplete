@@ -41,5 +41,8 @@
   "dependencies": {
     "node-fetch": "^3.3.2",
     "ollama": "^0.5.14"
+  },
+  "repository": {
+    "url":"https://github.com/PowerfulGhost/simple-autocomplete"
   }
 }
