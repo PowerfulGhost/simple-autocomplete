@@ -1,6 +1,7 @@
 {
   "name": "simple-autocomplete",
   "displayName": "simple-autocomplete",
+  "publisher": "PowerfulGhost",
   "description": "",
   "version": "0.0.1",
   "engines": {
