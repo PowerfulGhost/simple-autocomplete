@@ -48,6 +48,7 @@ export class SimpleInlineCompletionItemProvider implements vscode.InlineCompleti
                     temperature: 0.3,
                     stop: ["\n"],
                     seed: 1234,
+                    num_ctx: 8192,
                 }
             });
             let completion = result.response.replaceAll("\r\n", "\n")
