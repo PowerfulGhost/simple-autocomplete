@@ -9,8 +9,9 @@ function rawString(str: string): string {
 
 export class SimpleInlineCompletionItemProvider implements vscode.InlineCompletionItemProvider {
     private debounceTimeout: NodeJS.Timeout | null = null;
-    private debounceTimeInMilliseconds = 500;
-    private ollama = new Ollama({ host: "http://127.0.0.1:16384" })
+    private debounceTimeInMilliseconds = vscode.workspace.getConfiguration("simple-autocomplete").get("debunceTimeMs") as number
+    private ollama = new Ollama({ host: vscode.workspace.getConfiguration("simple-autocomplete").get("ollamaHost") })
+    private model = vscode.workspace.getConfiguration("simple-autocomplete").get("model") as string
 
     provideInlineCompletionItems(document: vscode.TextDocument, position: vscode.Position): Promise<vscode.InlineCompletionList> {
         if (this.debounceTimeout) {
@@ -28,19 +29,17 @@ export class SimpleInlineCompletionItemProvider implements vscode.InlineCompleti
     private async fetchCompletionItems(document: vscode.TextDocument, position: vscode.Position): Promise<vscode.InlineCompletionItem[]> {
 
         // process context for the prompt
-        const contextWindow = 500; // TODO: Implement context window control
-
         let textAboveCursor = document.getText(new vscode.Range(new vscode.Position(0, 0), position));
         let textBelowCursor = document.getText(new vscode.Range(position, new vscode.Position(document.lineCount, document.lineAt(document.lineCount - 1).range.end.character)));
 
-        const prompt = `<|fim_prefix|>${textAboveCursor}<|fim_suffix|>${textBelowCursor}<|fim_middle|>`.replaceAll("\r\n", "\n"); // TODO: Implement custom prompt template config
+        const prompt = `<|fim_prefix|>${textAboveCursor}<|fim_suffix|>${textBelowCursor}<|fim_middle|>`.replaceAll("\r\n", "\n"); // FIM prompt template for qwen2.5 coder
         console.log(`prompt: ${rawString(prompt)}`);
 
         const completionItems: vscode.InlineCompletionItem[] = [];
 
         try {
             const result = await this.ollama.generate({
-                model: "qwen2.5-coder:latest",
+                model: this.model,
                 prompt: prompt,
                 raw: true,
                 stream: false,
@@ -48,7 +47,6 @@ export class SimpleInlineCompletionItemProvider implements vscode.InlineCompleti
                     temperature: 0.3,
                     stop: ["\n"],
                     seed: 1234,
-                    num_ctx: 8192,
                 }
             });
             let completion = result.response.replaceAll("\r\n", "\n")

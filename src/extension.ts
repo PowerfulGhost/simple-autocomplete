@@ -2,8 +2,7 @@ import * as vscode from 'vscode';
 import { SimpleInlineCompletionItemProvider } from "./simpleInlineCompletionProvider.js";
 
 export function activate(context: vscode.ExtensionContext) {
-	console.log("test")
-	vscode.window.setStatusBarMessage("testtesttest")
+	vscode.window.setStatusBarMessage("SAC activated.")
 
 	let providerDisposable: vscode.Disposable | undefined;
 
@@ -27,7 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
 				provider
 			);
 			context.subscriptions.push(providerDisposable);
-			statusBarItem.text = 'Simple Autocomplete: ON'; // Change status bar text
+			statusBarItem.text = 'SAC: √'; // Change status bar text
 		} else {
 			if (providerDisposable) {
 				providerDisposable.dispose(); // unregister the provider
@@ -37,7 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 				providerDisposable = undefined;
 			}
-			statusBarItem.text = 'Simple Autocomplete: OFF'; // Change status bar text
+			statusBarItem.text = 'SAC: ×'; // Change status bar text
 		}
 	});
 	context.subscriptions.push(disposable);
@@ -46,6 +45,6 @@ export function activate(context: vscode.ExtensionContext) {
 	if (context.globalState.get('simple-autocomplete-activated')) {
 		vscode.commands.executeCommand('simple-autocomplete.toggleActivate');
 	} else {
-		statusBarItem.text = 'Simple Autocomplete: OFF';
+		statusBarItem.text = 'SAC: OFF';
 	}
 }

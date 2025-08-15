@@ -3,7 +3,7 @@
   "displayName": "simple-autocomplete",
   "publisher": "PowerfulGhost",
   "description": "",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "engines": {
     "vscode": "^1.98.0"
   },
@@ -18,7 +18,25 @@
         "command": "simple-autocomplete.toggleActivate",
         "title": "Simple autocomplete toggle activate"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Simple Autocomplete",
+      "type": "object",
+      "properties": {
+        "simple-autocomplete.ollamaHost": {
+          "type": "string",
+          "default": "http://127.0.0.1:11434"
+        },
+        "simple-autocomplete.model": {
+          "type": "string",
+          "default": "hf.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q3_K_XL"
+        },
+        "simple-autocomplete.debunceTimeMs": {
+          "type": "number",
+          "default": 500
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
@@ -44,6 +62,6 @@
     "ollama": "^0.5.14"
   },
   "repository": {
-    "url":"https://github.com/PowerfulGhost/simple-autocomplete"
+    "url": "https://github.com/PowerfulGhost/simple-autocomplete"
   }
 }
