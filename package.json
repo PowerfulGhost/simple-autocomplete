@@ -3,7 +3,7 @@
   "displayName": "simple-autocomplete",
   "publisher": "PowerfulGhost",
   "description": "",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "engines": {
     "vscode": "^1.98.0"
   },
@@ -44,6 +44,11 @@
           "type": "number",
           "default": 30,
           "description": "Maximum number of lines to include below cursor position"
+        },
+        "simple-autocomplete.promptTemplate": {
+          "type": "string",
+          "default": "<|fim_prefix|>{textAboveCursor}<|fim_suffix|>{textBelowCursor}<|fim_middle|>",
+          "description": "Prompt template for the LLM. Use {textAboveCursor} and {textBelowCursor} as placeholders. For example: `<|fim_prefix|>{textAboveCursor}<|fim_suffix|>{textBelowCursor}<|fim_middle|>`"
         }
       }
     }

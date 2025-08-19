@@ -15,6 +15,7 @@ export class SimpleInlineCompletionItemProvider implements vscode.InlineCompleti
     private model = vscode.workspace.getConfiguration("simple-autocomplete").get("model") as string
     private maxLinesAbove = vscode.workspace.getConfiguration("simple-autocomplete").get("maxLinesAbove") as number
     private maxLinesBelow = vscode.workspace.getConfiguration("simple-autocomplete").get("maxLinesBelow") as number
+    private promptTemplate = vscode.workspace.getConfiguration("simple-autocomplete").get("promptTemplate") as string
 
     provideInlineCompletionItems(document: vscode.TextDocument, position: vscode.Position): Promise<vscode.InlineCompletionList> {
         if (this.debounceTimeout) {
@@ -53,7 +54,10 @@ export class SimpleInlineCompletionItemProvider implements vscode.InlineCompleti
             textBelowCursor = linesBelow.join('\n');
         }
 
-        const prompt = `<|fim_prefix|>${textAboveCursor}<|fim_suffix|>${textBelowCursor}<|fim_middle|>`.replaceAll("\r\n", "\n");
+        const prompt = this.promptTemplate
+            .replace('{textAboveCursor}', textAboveCursor)
+            .replace('{textBelowCursor}', textBelowCursor)
+            .replaceAll("\r\n", "\n");
         outputChannel.appendLine(`prompt: ${rawString(prompt)}`);
 
         const completionItems: vscode.InlineCompletionItem[] = [];
