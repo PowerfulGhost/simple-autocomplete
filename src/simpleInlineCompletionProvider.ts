@@ -1,17 +1,20 @@
 import * as vscode from 'vscode';
 import { Ollama } from 'ollama';
-import { resourceLimits } from 'worker_threads';
 
 function rawString(str: string): string {
     return JSON.stringify(str).slice(1, -1);
 }
 
+// Create a logger to output to VS Code's Output Panel
+const outputChannel = vscode.window.createOutputChannel('Simple Autocomplete');
 
 export class SimpleInlineCompletionItemProvider implements vscode.InlineCompletionItemProvider {
     private debounceTimeout: NodeJS.Timeout | null = null;
     private debounceTimeInMilliseconds = vscode.workspace.getConfiguration("simple-autocomplete").get("debunceTimeMs") as number
     private ollama = new Ollama({ host: vscode.workspace.getConfiguration("simple-autocomplete").get("ollamaHost") })
     private model = vscode.workspace.getConfiguration("simple-autocomplete").get("model") as string
+    private maxLinesAbove = vscode.workspace.getConfiguration("simple-autocomplete").get("maxLinesAbove") as number
+    private maxLinesBelow = vscode.workspace.getConfiguration("simple-autocomplete").get("maxLinesBelow") as number
 
     provideInlineCompletionItems(document: vscode.TextDocument, position: vscode.Position): Promise<vscode.InlineCompletionList> {
         if (this.debounceTimeout) {
@@ -32,8 +35,26 @@ export class SimpleInlineCompletionItemProvider implements vscode.InlineCompleti
         let textAboveCursor = document.getText(new vscode.Range(new vscode.Position(0, 0), position));
         let textBelowCursor = document.getText(new vscode.Range(position, new vscode.Position(document.lineCount, document.lineAt(document.lineCount - 1).range.end.character)));
 
-        const prompt = `<|fim_prefix|>${textAboveCursor}<|fim_suffix|>${textBelowCursor}<|fim_middle|>`.replaceAll("\r\n", "\n"); // FIM prompt template for qwen2.5 coder
-        console.log(`prompt: ${rawString(prompt)}`);
+        // Truncate context based on configured length
+        const maxLinesAbove = this.maxLinesAbove;
+        const maxLinesBelow = this.maxLinesBelow;
+        const linesAbove = textAboveCursor.split('\n');
+        const linesBelow = textBelowCursor.split('\n');
+
+        // Limit lines above cursor
+        if (linesAbove.length > maxLinesAbove) {
+            linesAbove.splice(0, linesAbove.length - maxLinesAbove);
+            textAboveCursor = linesAbove.join('\n');
+        }
+
+        // Limit lines below cursor
+        if (linesBelow.length > maxLinesBelow) {
+            linesBelow.splice(linesBelow.length - maxLinesBelow, linesBelow.length);
+            textBelowCursor = linesBelow.join('\n');
+        }
+
+        const prompt = `<|fim_prefix|>${textAboveCursor}<|fim_suffix|>${textBelowCursor}<|fim_middle|>`.replaceAll("\r\n", "\n");
+        outputChannel.appendLine(`prompt: ${rawString(prompt)}`);
 
         const completionItems: vscode.InlineCompletionItem[] = [];
 
@@ -50,11 +71,12 @@ export class SimpleInlineCompletionItemProvider implements vscode.InlineCompleti
                 }
             });
             let completion = result.response.replaceAll("\r\n", "\n")
-            console.log(`response: ${rawString(completion)}`);
+            outputChannel.appendLine(`response: ${rawString(completion)}`);
             completionItems.push({ insertText: completion });
         }
         catch (err) {
-            console.error('Error while calling AI API:', err);
+            outputChannel.appendLine('Error while calling AI API:');
+            outputChannel.appendLine(JSON.stringify(err));
         }
 
         return completionItems;

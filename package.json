@@ -3,7 +3,7 @@
   "displayName": "simple-autocomplete",
   "publisher": "PowerfulGhost",
   "description": "",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "engines": {
     "vscode": "^1.98.0"
   },
@@ -34,6 +34,16 @@
         "simple-autocomplete.debunceTimeMs": {
           "type": "number",
           "default": 500
+        },
+        "simple-autocomplete.maxLinesAbove": {
+          "type": "number",
+          "default": 70,
+          "description": "Maximum number of lines to include above cursor position"
+        },
+        "simple-autocomplete.maxLinesBelow": {
+          "type": "number",
+          "default": 30,
+          "description": "Maximum number of lines to include below cursor position"
         }
       }
     }
