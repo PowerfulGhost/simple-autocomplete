@@ -3,7 +3,7 @@
   "displayName": "simple-autocomplete",
   "publisher": "PowerfulGhost",
   "description": "",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "engines": {
     "vscode": "^1.98.0"
   },
@@ -35,7 +35,7 @@
           "type": "string",
           "default": "Qwen3 Coder 30B A3B"
         },
-        "simple-autocomplete.debunceTimeMs": {
+        "simple-autocomplete.debounceTimeMs": {
           "type": "number",
           "default": 500
         },
