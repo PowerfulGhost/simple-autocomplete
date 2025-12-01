@@ -17,7 +17,8 @@ export class SimpleInlineCompletionItemProvider implements vscode.InlineCompleti
     private maxLinesAbove = vscode.workspace.getConfiguration("simple-autocomplete").get("maxLinesAbove") as number;
     private maxLinesBelow = vscode.workspace.getConfiguration("simple-autocomplete").get("maxLinesBelow") as number;
     private promptTemplate = vscode.workspace.getConfiguration("simple-autocomplete").get("promptTemplate") as string;
-    private maxTokens = vscode.workspace.getConfiguration("simple-autocomplete").get("maxTokens") as number || 50;  // 新增配置项
+    private maxTokens = vscode.workspace.getConfiguration("simple-autocomplete").get("maxTokens") as number;
+    private multiline = vscode.workspace.getConfiguration("simple-autocomplete").get("multiline") as boolean;
 
     constructor() {
         // 初始化 OpenAI 客户端
@@ -73,12 +74,14 @@ export class SimpleInlineCompletionItemProvider implements vscode.InlineCompleti
 
         try {
             // 使用 OpenAI Completions API
+            let stopSeq = this.multiline ? "\n\n" : "\n";
+            outputChannel.appendLine(`stopSeq: ${rawString(stopSeq)}`);
             const response = await this.openai.completions.create({
                 model: this.model,
                 prompt: prompt,
                 temperature: 0.3,
                 max_tokens: this.maxTokens,
-                stop: ["\n"],
+                stop: [stopSeq],
                 seed: 1234
             });
 

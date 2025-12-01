@@ -3,7 +3,7 @@
   "displayName": "simple-autocomplete",
   "publisher": "PowerfulGhost",
   "description": "",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "engines": {
     "vscode": "^1.98.0"
   },
@@ -53,6 +53,14 @@
           "type": "string",
           "default": "<|fim_prefix|>{textAboveCursor}<|fim_suffix|>{textBelowCursor}<|fim_middle|>",
           "description": "Prompt template for the LLM. Use {textAboveCursor} and {textBelowCursor} as placeholders. For example: `<|fim_prefix|>{textAboveCursor}<|fim_suffix|>{textBelowCursor}<|fim_middle|>`"
+        },
+        "simple-autocomplete.maxTokens": {
+          "type": "number",
+          "default": 128
+        },
+        "simple-autocomplete.multiline": {
+          "type": "boolean",
+          "default": false
         }
       }
     }
