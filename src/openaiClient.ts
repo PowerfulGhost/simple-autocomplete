@@ -28,4 +28,17 @@ export class OpenAIService {
 
         return response.choices[0].text.replaceAll("\r\n", "\n");
     }
+
+    async completeWithMultilineStop(prompt: string, config: AutocompleteConfig): Promise<string> {
+        const response = await this.client.completions.create({
+            model: config.model,
+            prompt,
+            temperature: 0.3,
+            max_tokens: config.maxTokens,
+            stop: ["\n\n"], // 始终使用双换行作为停止符
+            seed: 1234
+        });
+
+        return response.choices[0].text.replaceAll("\r\n", "\n");
+    }
 }
