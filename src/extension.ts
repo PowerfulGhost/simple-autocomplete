@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import { SimpleInlineCompletionItemProvider } from "./simpleInlineCompletionProvider.js";
+import { SimpleInlineCompletionItemProvider } from "./completionProvider";
+export const outputChannel = vscode.window.createOutputChannel('Simple Autocomplete');
 
 export function activate(context: vscode.ExtensionContext) {
 
